@@ -1,0 +1,24 @@
+{
+  "name": "amico-desktop",
+  "version": "0.1.0",
+  "description": "Amico — Your AI Desktop Companion",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron .",
+    "dev": "electron . --dev"
+  },
+  "dependencies": {
+    "electron": "^33.0.0"
+  },
+  "devDependencies": {
+    "electron-builder": "^24.0.0"
+  },
+  "build": {
+    "appId": "com.amico.desktop",
+    "productName": "Amico",
+    "mac": {
+      "category": "public.app-category.entertainment",
+      "target": "dmg"
+    }
+  }
+}

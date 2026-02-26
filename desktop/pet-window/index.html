@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Amico Pet</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    html, body {
+      width: 100%;
+      height: 100%;
+      background: transparent;
+      overflow: hidden;
+      -webkit-user-select: none;
+      user-select: none;
+    }
+
+    #app {
+      position: relative;
+      width: 100%;
+      height: 100%;
+    }
+
+    canvas {
+      display: block;
+      width: 100%;
+      height: 100%;
+    }
+
+    /* 加载指示器 */
+    #loading {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 12px;
+      pointer-events: none;
+    }
+
+    #loading .ring {
+      width: 40px;
+      height: 40px;
+      border: 3px solid rgba(255, 140, 66, 0.2);
+      border-top-color: #ff8c42;
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+    }
+
+    #loading p {
+      color: rgba(61, 51, 41, 0.6);
+      font-family: -apple-system, sans-serif;
+      font-size: 12px;
+      font-weight: 600;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    /* 空状态（没有宠物时的提示） */
+    #empty-state {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      text-align: center;
+      pointer-events: none;
+    }
+
+    #empty-state .mascot {
+      font-size: 48px;
+      margin-bottom: 8px;
+      opacity: 0.3;
+    }
+
+    #empty-state p {
+      color: rgba(61, 51, 41, 0.4);
+      font-family: -apple-system, sans-serif;
+      font-size: 11px;
+      font-weight: 600;
+    }
+
+    .hidden { display: none !important; }
+  </style>
+</head>
+<body>
+  <div id="app">
+    <canvas id="pet-canvas"></canvas>
+
+    <div id="loading" class="hidden">
+      <div class="ring"></div>
+      <p>Loading Amico...</p>
+    </div>
+
+    <div id="empty-state">
+      <div class="mascot">🐾</div>
+      <p>Create your Amico<br/>in the web app!</p>
+    </div>
+  </div>
+
+  <script type="module" src="renderer.js"></script>
+</body>
+</html>

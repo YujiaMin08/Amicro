@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Amico — Starting...</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: -apple-system, 'Helvetica Neue', sans-serif;
+      background: #fdf6ee;
+      color: #3d3329;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      gap: 16px;
+    }
+    .title { font-size: 32px; font-weight: 900; background: linear-gradient(135deg, #ff8c42, #f7c948, #6ec6ca); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+    .ring { width: 40px; height: 40px; border: 3px solid rgba(255,140,66,0.2); border-top-color: #ff8c42; border-radius: 50%; animation: spin 1s linear infinite; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    p { color: #b8a99a; font-size: 14px; font-weight: 600; }
+    code { background: #fff8f0; padding: 4px 10px; border-radius: 8px; font-size: 13px; color: #ff8c42; border: 1px solid rgba(255,140,66,0.2); }
+  </style>
+  <script>
+    // 每 2 秒重试加载 Next.js
+    setInterval(() => {
+      fetch('http://localhost:3000').then(() => {
+        window.location.href = 'http://localhost:3000';
+      }).catch(() => {});
+    }, 2000);
+  </script>
+</head>
+<body>
+  <div class="title">Amico</div>
+  <div class="ring"></div>
+  <p>Waiting for the web app to start...</p>
+  <p>Please run: <code>npm run dev</code></p>
+  <p>in the <code>amico</code> directory</p>
+</body>
+</html>

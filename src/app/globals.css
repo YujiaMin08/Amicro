@@ -1,26 +1,199 @@
+@import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap');
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
-
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
+  --color-background: #fdf6ee;
+  --color-foreground: #3d3329;
+  --color-primary: #ff8c42;
+  --color-primary-light: #ffb380;
+  --color-primary-dark: #e06b1a;
+  --color-secondary: #6ec6ca;
+  --color-secondary-light: #a8e4e7;
+  --color-accent: #f7c948;
+  --color-surface: #fff8f0;
+  --color-surface-hover: #fff0e0;
+  --color-muted: #b8a99a;
+  --color-card: #ffffff;
+  --font-sans: "Nunito", var(--font-geist-sans), sans-serif;
   --font-mono: var(--font-geist-mono);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+:root {
+  --background: #fdf6ee;
+  --foreground: #3d3329;
+}
+
+* {
+  box-sizing: border-box;
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: "Nunito", Arial, Helvetica, sans-serif;
+  overflow-x: hidden;
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+}
+::-webkit-scrollbar-track {
+  background: #fdf6ee;
+}
+::-webkit-scrollbar-thumb {
+  background: #e0d5c8;
+  border-radius: 10px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #c9bba8;
+}
+
+/* Floating animation */
+@keyframes float {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-20px); }
+}
+
+@keyframes float-slow {
+  0%, 100% { transform: translateY(0px) rotate(0deg); }
+  50% { transform: translateY(-15px) rotate(5deg); }
+}
+
+@keyframes wiggle {
+  0%, 100% { transform: rotate(-3deg); }
+  50% { transform: rotate(3deg); }
+}
+
+@keyframes pulse-soft {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.7; }
+}
+
+@keyframes bounce-in {
+  0% { transform: scale(0); opacity: 0; }
+  50% { transform: scale(1.1); }
+  100% { transform: scale(1); opacity: 1; }
+}
+
+@keyframes sparkle {
+  0%, 100% { opacity: 0; transform: scale(0) rotate(0deg); }
+  50% { opacity: 1; transform: scale(1) rotate(180deg); }
+}
+
+.animate-float {
+  animation: float 3s ease-in-out infinite;
+}
+
+.animate-float-slow {
+  animation: float-slow 4s ease-in-out infinite;
+}
+
+.animate-wiggle {
+  animation: wiggle 2s ease-in-out infinite;
+}
+
+.animate-pulse-soft {
+  animation: pulse-soft 2s ease-in-out infinite;
+}
+
+.animate-bounce-in {
+  animation: bounce-in 0.5s ease-out forwards;
+}
+
+/* Gradient text */
+.gradient-text {
+  background: linear-gradient(135deg, #ff8c42, #f7c948, #6ec6ca);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* Cute button styles */
+.btn-primary {
+  background: linear-gradient(135deg, #ff8c42, #ffb380);
+  color: white;
+  border: none;
+  border-radius: 50px;
+  padding: 16px 40px;
+  font-size: 1.15rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 15px rgba(255, 140, 66, 0.35);
+  position: relative;
+  overflow: hidden;
+}
+
+.btn-primary:hover {
+  transform: translateY(-3px) scale(1.03);
+  box-shadow: 0 8px 25px rgba(255, 140, 66, 0.45);
+}
+
+.btn-primary:active {
+  transform: translateY(0px) scale(0.98);
+}
+
+/* Card styling */
+.card-cute {
+  background: white;
+  border-radius: 24px;
+  box-shadow: 0 4px 20px rgba(61, 51, 41, 0.08);
+  border: 2px solid rgba(255, 140, 66, 0.1);
+  transition: all 0.3s ease;
+}
+
+.card-cute:hover {
+  box-shadow: 0 8px 30px rgba(61, 51, 41, 0.12);
+  border-color: rgba(255, 140, 66, 0.2);
+}
+
+/* Dotted background pattern */
+.bg-dots {
+  background-image: radial-gradient(circle, #e8ddd0 1px, transparent 1px);
+  background-size: 30px 30px;
+}
+
+/* Loading spinner */
+.loading-ring {
+  display: inline-block;
+  width: 80px;
+  height: 80px;
+}
+.loading-ring::after {
+  content: "";
+  display: block;
+  width: 64px;
+  height: 64px;
+  margin: 8px;
+  border-radius: 50%;
+  border: 6px solid #ff8c42;
+  border-color: #ff8c42 transparent #6ec6ca transparent;
+  animation: loading-ring 1.2s linear infinite;
+}
+@keyframes loading-ring {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* Upload area */
+.upload-area {
+  border: 3px dashed #e0d5c8;
+  border-radius: 24px;
+  transition: all 0.3s ease;
+  cursor: pointer;
+}
+
+.upload-area:hover,
+.upload-area.drag-over {
+  border-color: #ff8c42;
+  background: rgba(255, 140, 66, 0.05);
+}
+
+/* Sparkle decorations */
+.sparkle {
+  position: absolute;
+  width: 20px;
+  height: 20px;
+  animation: sparkle 2s ease-in-out infinite;
 }
