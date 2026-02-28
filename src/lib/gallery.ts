@@ -9,6 +9,11 @@ const GALLERY_KEY = "amico_gallery";
 export interface GalleryItem {
   id: string;
   name: string;
+  characterProfile?: {
+    background?: string;
+    facts?: string;
+    summary?: string;
+  };
   gender?: "male" | "female";
   createdAt: number;
   /** 压缩后的 2D 黏土风格缩略图（JPEG data URL，约 30-60 KB） */

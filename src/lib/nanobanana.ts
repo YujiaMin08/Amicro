@@ -49,7 +49,8 @@ export interface NanobananaResult {
  */
 export async function generateClayCharacterFromText(
   gender: "male" | "female",
-  name?: string
+  name?: string,
+  profileHint?: string
 ): Promise<NanobananaResult> {
   if (!NANOBANANA_API_KEY) {
     throw new Error("缺少 NANOBANANA_API_KEY 环境变量");
@@ -60,6 +61,9 @@ export async function generateClayCharacterFromText(
     : "cute male boy character, masculine, short hair, wearing a casual cool outfit like a hoodie or jacket";
 
   const nameDesc = name ? ` The character's name is ${name}.` : "";
+  const profileDesc = profileHint?.trim()
+    ? `\nADDITIONAL CHARACTER NOTES:\n${profileHint.trim().slice(0, 800)}\nUse these notes to influence outfit, vibe, and expression while keeping the same clay style and A-pose constraints.`
+    : "";
 
   const prompt = `Create a high-quality illustration of a single cute chibi clay figurine character.
 
@@ -84,7 +88,7 @@ POSE — CRITICAL FOR 3D RIGGING (follow exactly):
 - Neck clearly visible between head and shoulders
 - Wrists and ankles show slight narrowing to define joints clearly
 
-NO text, NO watermarks, single character only.`;
+NO text, NO watermarks, single character only.${profileDesc}`;
 
   const requestBody = {
     contents: [

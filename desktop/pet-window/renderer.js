@@ -45,6 +45,8 @@ scene.add(fillLight);
 // ── 状态 ─────────────────────────────────────────────────────────────────────
 let mixer = null;
 let currentModel = null;
+let currentAnimations = [];
+let currentAction = null;
 let clock = new THREE.Clock();
 let isDragging = false;
 let lastMouseX = 0;
@@ -63,6 +65,8 @@ function loadGlb(url) {
   if (currentModel) {
     scene.remove(currentModel);
     currentModel = null;
+    currentAnimations = [];
+    currentAction = null;
     if (mixer) { mixer.stopAllAction(); mixer = null; }
   }
 
@@ -92,14 +96,15 @@ function loadGlb(url) {
       currentModel = model;
 
       // 设置动画混合器
-      if (gltf.animations.length > 0) {
+      currentAnimations = gltf.animations ?? [];
+      if (currentAnimations.length > 0) {
         mixer = new THREE.AnimationMixer(model);
         // 自动播放第一个动画（idle）
         const idleClip =
-          gltf.animations.find((a) => /idle/i.test(a.name)) ??
-          gltf.animations[0];
-        const action = mixer.clipAction(idleClip);
-        action.play();
+          currentAnimations.find((a) => /idle/i.test(a.name)) ??
+          currentAnimations[0];
+        currentAction = mixer.clipAction(idleClip);
+        currentAction.play();
         console.log("[renderer] 播放动画:", idleClip.name);
       }
 
@@ -121,16 +126,23 @@ function loadGlb(url) {
 
 // ── 切换动画（主进程菜单触发）────────────────────────────────────────────────
 function playAnimationByName(name) {
-  if (!mixer || !currentModel) return;
-  // 遍历所有 actions，找到名称匹配的
-  mixer.stopAllAction();
-  const clips = currentModel.animations ?? [];
-  const clip = clips.find((c) =>
-    c.name.toLowerCase().includes(name.toLowerCase())
-  );
+  if (!mixer || !currentModel || currentAnimations.length === 0) return;
+
+  // 兼容 "wave_goodbye" / "biped:agree" / "Idle" 等不同命名格式
+  const normalize = (value) => value.toLowerCase().replace(/[^a-z0-9]/g, "");
+  const presetToken = normalize((name.includes(":") ? name.split(":").pop() : name) ?? name);
+  const clip = currentAnimations.find((c) => normalize(c.name).includes(presetToken));
+
   if (clip) {
-    mixer.clipAction(clip).reset().fadeIn(0.3).play();
+    const nextAction = mixer.clipAction(clip);
+    if (currentAction !== nextAction) {
+      nextAction.reset().fadeIn(0.25).play();
+      currentAction?.fadeOut(0.25);
+      currentAction = nextAction;
+    }
     console.log("[renderer] 切换动画:", clip.name);
+  } else {
+    console.warn("[renderer] 未找到动画:", name);
   }
 }
 

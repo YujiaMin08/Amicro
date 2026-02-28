@@ -49,10 +49,13 @@ export async function uploadImageToTripo(
   if (!TRIPO_API_KEY) throw new Error("缺少 TRIPO_API_KEY 环境变量");
 
   const ext = mimeType.replace("image/", "").replace("jpeg", "jpg");
+  // Copy Buffer into a fresh Uint8Array to satisfy Node/TS BlobPart typing.
+  const bytes = new Uint8Array(imageBuffer.length);
+  bytes.set(imageBuffer);
   const formData = new FormData();
   formData.append(
     "file",
-    new Blob([imageBuffer], { type: mimeType }),
+    new Blob([bytes], { type: mimeType }),
     `image.${ext}`
   );
 

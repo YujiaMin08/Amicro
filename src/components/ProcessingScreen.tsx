@@ -146,20 +146,8 @@ export default function ProcessingScreen({ uploadedImage, mode, currentStep }: P
                 animate={{ y: [-6, 6, -6] }}
                 transition={{ duration: 3.5, repeat: Infinity, ease: "easeInOut" }}
               />
-              {/* Spinning accent border */}
-              <motion.div
-                className="absolute -inset-1 rounded-2xl"
-                style={{
-                  background: "conic-gradient(from 0deg, #ff8c42, #6ec6ca, transparent, transparent)",
-                  mask: "linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0)",
-                  maskComposite: "exclude",
-                  padding: "2px",
-                  WebkitMask: "linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0)",
-                  WebkitMaskComposite: "xor",
-                }}
-                animate={{ rotate: 360 }}
-                transition={{ duration: 2.5, repeat: Infinity, ease: "linear" }}
-              />
+              {/* Subtle static edge highlight (replaces rotating frame) */}
+              <div className="absolute -inset-1 rounded-2xl border border-white/70 shadow-[0_0_0_1px_rgba(255,140,66,0.14)]" />
             </div>
           </div>
         )}

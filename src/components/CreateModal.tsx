@@ -9,7 +9,11 @@ type Gender = "male" | "female";
 interface CreateModalProps {
   onClose: () => void;
   // Photo flow
-  onImageUploaded: (file: File, preview: string) => void;
+  onImageUploaded: (
+    file: File,
+    preview: string,
+    profile?: { name?: string; gender?: Gender }
+  ) => void;
   // Random flow
   onRandomGenerate: (gender: Gender, name: string) => void;
   isGeneratingRandom?: boolean;
@@ -76,6 +80,8 @@ export default function CreateModal({
   // Random form
   const [gender, setGender] = useState<Gender>("female");
   const [name, setName] = useState("");
+  const [photoName, setPhotoName] = useState("");
+  const [photoGender, setPhotoGender] = useState<Gender>("female");
 
   // ── Photo handlers ─────────────────────────────────────────────
   const handleFile = useCallback((file: File) => {
@@ -103,7 +109,12 @@ export default function CreateModal({
   };
 
   const handleConfirmPhoto = () => {
-    if (selectedFile && previewUrl) onImageUploaded(selectedFile, previewUrl);
+    if (selectedFile && previewUrl) {
+      onImageUploaded(selectedFile, previewUrl, {
+        name: photoName.trim(),
+        gender: photoGender,
+      });
+    }
   };
 
   const handleConfirmRandom = () => {
@@ -223,6 +234,35 @@ export default function CreateModal({
                   <p className="text-xs text-muted/60 mb-4">
                     {selectedFile && (selectedFile.size / 1024 / 1024).toFixed(2)} MB
                   </p>
+                  <div className="text-left mb-4">
+                    <p className="text-xs font-bold text-muted uppercase tracking-wider mb-2">Character Name (optional)</p>
+                    <input
+                      type="text"
+                      value={photoName}
+                      onChange={(e) => setPhotoName(e.target.value)}
+                      placeholder="e.g. Nana"
+                      maxLength={24}
+                      className="w-full px-4 py-3 rounded-2xl bg-surface border border-primary/10 text-foreground font-semibold text-sm placeholder:text-muted/50 focus:outline-none focus:border-primary/30 transition-colors"
+                    />
+                  </div>
+                  <div className="text-left mb-4">
+                    <p className="text-xs font-bold text-muted uppercase tracking-wider mb-2">Gender</p>
+                    <div className="flex gap-3">
+                      {(["female", "male"] as Gender[]).map((g) => (
+                        <button
+                          key={`photo-${g}`}
+                          onClick={() => setPhotoGender(g)}
+                          className={`flex-1 py-3 rounded-2xl font-semibold text-sm transition-all capitalize ${
+                            photoGender === g
+                              ? "bg-primary text-white shadow-md"
+                              : "bg-surface text-foreground hover:bg-surface-hover"
+                          }`}
+                        >
+                          {g === "female" ? "Female" : "Male"}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
                   <button onClick={handleConfirmPhoto} className="btn-primary w-full py-4">
                     Start Creating
                   </button>

@@ -32,6 +32,7 @@ interface PreviewScreenProps {
   onRecreate: () => void;
   onConfirm: () => void;
   onBack: () => void;
+  extraPanel?: React.ReactNode;
 }
 
 // ─── 小型 Loading Spinner ────────────────────────────────────────────────────
@@ -58,6 +59,7 @@ export default function PreviewScreen({
   onRecreate,
   onConfirm,
   onBack,
+  extraPanel,
 }: PreviewScreenProps) {
 
   const handleDownload = () => {
@@ -89,14 +91,6 @@ export default function PreviewScreen({
         >
           ← Back
         </button>
-        <div className="flex items-center gap-2">
-          {modelUrl && (
-            <div className="flex items-center gap-2 bg-green-100 border border-green-200 rounded-full px-3 py-1">
-              <span className="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse" />
-              <span className="text-xs text-green-700 font-bold">AI Generated + Rigged</span>
-            </div>
-          )}
-        </div>
       </motion.div>
 
       {/* Main layout */}
@@ -232,6 +226,8 @@ export default function PreviewScreen({
             </div>
           )}
 
+          {extraPanel}
+
           {/* Actions */}
           <div className="flex flex-col gap-3 mt-auto">
             {/* Download */}
@@ -272,9 +268,6 @@ export default function PreviewScreen({
         </motion.div>
       </div>
 
-      <div className="text-center pb-3">
-        <p className="text-xs text-muted/40 font-medium">Powered by Tripo3D + nanobanana</p>
-      </div>
     </div>
   );
 }

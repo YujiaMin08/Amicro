@@ -1,13 +1,15 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { loadGallery, deleteGalleryItem, type GalleryItem } from "@/lib/gallery";
+import { removeCachedModelsForCharacter } from "@/lib/modelCache";
 
 interface GalleryScreenProps {
   onBack: () => void;
   onLoadCharacter: (item: GalleryItem) => void;
   onCreateNew: () => void;
+  onDeleteCharacter?: (item: GalleryItem) => Promise<void> | void;
 }
 
 // ── 单个角色卡片 ─────────────────────────────────────────────────────────────
@@ -22,7 +24,6 @@ function CharacterCard({
 }) {
   const [menuOpen, setMenuOpen] = useState(false);
 
-  const date = new Date(item.createdAt);
   const timeAgo = formatTimeAgo(item.createdAt);
 
   return (
@@ -81,7 +82,7 @@ function CharacterCard({
                   onClick={(e) => { e.stopPropagation(); setMenuOpen(false); }}
                 />
                 <motion.div
-                  className="absolute right-0 top-8 z-20 bg-card shadow-lg rounded-2xl border border-primary/10 overflow-hidden min-w-[140px]"
+                  className="absolute right-0 bottom-8 z-20 bg-card shadow-lg rounded-2xl border border-primary/10 overflow-hidden min-w-[156px]"
                   initial={{ opacity: 0, scale: 0.9, y: -8 }}
                   animate={{ opacity: 1, scale: 1, y: 0 }}
                   exit={{ opacity: 0, scale: 0.9, y: -8 }}
@@ -100,9 +101,9 @@ function CharacterCard({
                       setMenuOpen(false);
                       if (confirm("Delete this character?")) onDelete();
                     }}
-                    className="w-full text-left px-4 py-3 text-sm font-semibold text-red-400 hover:bg-red-50 transition-colors"
+                    className="w-full text-left px-4 py-3 text-sm font-semibold text-red-500 hover:bg-red-50/80 transition-colors"
                   >
-                    Delete
+                    Delete Character
                   </button>
                 </motion.div>
               </>
@@ -165,16 +166,25 @@ function EmptyState({ onCreateNew }: { onCreateNew: () => void }) {
 }
 
 // ── Main gallery screen ──────────────────────────────────────────────────────
-export default function GalleryScreen({ onBack, onLoadCharacter, onCreateNew }: GalleryScreenProps) {
-  const [items, setItems] = useState<GalleryItem[]>([]);
+export default function GalleryScreen({
+  onBack,
+  onLoadCharacter,
+  onCreateNew,
+  onDeleteCharacter,
+}: GalleryScreenProps) {
+  const [items, setItems] = useState<GalleryItem[]>(() => loadGallery());
 
-  useEffect(() => {
-    setItems(loadGallery());
-  }, []);
-
-  const handleDelete = (id: string) => {
-    deleteGalleryItem(id);
-    setItems((prev) => prev.filter((i) => i.id !== id));
+  const handleDelete = async (item: GalleryItem) => {
+    deleteGalleryItem(item.id);
+    await removeCachedModelsForCharacter(item.id);
+    if (onDeleteCharacter) {
+      try {
+        await onDeleteCharacter(item);
+      } catch (err) {
+        console.warn("[gallery] onDeleteCharacter failed:", err);
+      }
+    }
+    setItems((prev) => prev.filter((i) => i.id !== item.id));
   };
 
   return (
@@ -226,7 +236,7 @@ export default function GalleryScreen({ onBack, onLoadCharacter, onCreateNew }: 
                     key={item.id}
                     item={item}
                     onLoad={() => onLoadCharacter(item)}
-                    onDelete={() => handleDelete(item.id)}
+                    onDelete={() => { void handleDelete(item); }}
                   />
                 ))}
               </AnimatePresence>

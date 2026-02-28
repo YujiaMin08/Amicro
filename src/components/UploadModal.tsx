@@ -94,7 +94,7 @@ export default function UploadModal({ onClose, onImageUploaded }: UploadModalPro
         {/* Title */}
         <div className="text-center mb-6">
           <h2 className="text-2xl font-bold text-foreground mb-1">Upload a Photo</h2>
-          <p className="text-sm text-muted">Choose a portrait or pet photo to bring to life.</p>
+          <p className="text-sm text-muted">Choose a single-person portrait to bring to life.</p>
         </div>
 
         {/* Upload area */}
