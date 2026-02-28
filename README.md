@@ -1,62 +1,170 @@
 # Amico
 
-AI 桌面伙伴：用一张照片或随机形象，在网页里完成 2D 转 3D、绑定骨骼与动画，并可在桌面端以透明小窗形式常驻陪伴。
+English | 中文
 
-## 功能概览
+---
 
-- **创作者流程（Web）**  
-  上传照片或使用随机形象 → 2D 黏土风格图（Nano Banana）→ 3D 模型 + 骨骼 + 动画（Tripo3D）→ 预览并保存到本地角色库。
-- **桌面端（Electron）**  
-  主窗口加载本地 Next.js 创作者页面；独立宠物窗口展示 3D 角色，支持拖拽、切换动画、右键菜单（打开创作者、隐藏、退出等）。
-- **角色库**  
-  在创作者中可查看与管理已保存角色，并选择加载到桌面宠物窗口。
+## English
 
-## 环境要求
+Amico is an AI desktop companion platform.  
+You can start from a portrait (or random character), run the full web pipeline (2D style transfer -> 3D generation -> rigging -> animation), and then load the character into a transparent desktop pet window.
 
-- Node.js（建议 18+）
-- npm / pnpm / yarn
+### Features
 
-## 快速开始
+- **Web Creator (Next.js)**  
+  Upload or generate a character, preview results, and manage your local gallery.
+- **3D Pipeline**  
+  2D style image generation with Nano Banana, then 3D/rig/animation generation with Tripo3D.
+- **Desktop App (Electron)**  
+  Floating pet window with drag interaction, animation switching, side chat/menu windows, and quick controls.
+- **Local Persistence**  
+  Character gallery, chat memory, and downloaded model files are persisted locally for reuse.
 
-### 1. 安装依赖
+### Requirements
+
+- Node.js 18+
+- npm (or pnpm/yarn if you prefer)
+
+### Quick Start
+
+1) Install dependencies
 
 ```bash
-# 根目录（Next.js 网页）
+# Web app
+npm install
+
+# Desktop app
+cd desktop && npm install && cd ..
+```
+
+2) Configure environment variables
+
+```bash
+cp .env.example .env.local
+```
+
+Fill `.env.local`:
+
+| Variable | Description |
+|---|---|
+| `NANOBANANA_API_KEY` | API key for image style / multimodal features |
+| `NANOBANANA_BASE_URL` | API base URL (default: `https://api.jxincm.cn`) |
+| `TRIPO_API_KEY` | API key for 3D model, rigging, and animation |
+
+3) Run
+
+- **Web only**
+
+```bash
+npm run dev
+```
+
+Open `http://localhost:3000`.
+
+- **Web + Desktop**
+
+Start web first:
+
+```bash
+npm run dev
+```
+
+Then start Electron in another terminal:
+
+```bash
+cd desktop && npm start
+```
+
+Electron will probe ports `3000/3001/3002` and connect to the running web app automatically.
+
+### Project Structure
+
+```text
+amico/
+├── src/                 # Next.js app (App Router)
+│   ├── app/
+│   └── components/
+├── desktop/             # Electron app
+│   ├── main.js          # Main process (windows, IPC, local state)
+│   ├── preload.js
+│   ├── pet-window/      # 3D pet renderer window
+│   └── loading.html
+├── public/
+├── .env.example
+└── README.md
+```
+
+### Notes
+
+- Never commit `.env.local` or real API keys.
+- Desktop model files are stored under `~/.amico` for recovery and reuse.
+
+### License
+
+Private / No open-source license specified.
+
+---
+
+## 中文
+
+Amico 是一个 AI 桌面伙伴平台。  
+你可以从人像照片（或随机角色）出发，在网页端完成 2D 风格化 -> 3D 生成 -> 绑定骨骼 -> 动画生成，并把角色加载到透明桌面宠物窗口常驻陪伴。
+
+### 功能
+
+- **网页创作端（Next.js）**  
+  上传或随机生成角色，预览流程结果，并在本地角色库中管理角色。
+- **3D 生成流程**  
+  使用 Nano Banana 进行 2D 风格化，再通过 Tripo3D 完成 3D、绑定与动画生成。
+- **桌面端（Electron）**  
+  提供透明悬浮宠物窗口，支持拖拽、动画切换，以及侧边聊天/菜单窗口。
+- **本地持久化**  
+  角色库、聊天记忆、模型文件均可本地保存，便于下次继续使用。
+
+### 环境要求
+
+- Node.js 18+
+- npm（或 pnpm/yarn）
+
+### 快速开始
+
+1）安装依赖
+
+```bash
+# Web 端
 npm install
 
 # 桌面端
 cd desktop && npm install && cd ..
 ```
 
-### 2. 配置环境变量
-
-复制环境变量示例并填写 API Key（不要提交 `.env.local`）：
+2）配置环境变量
 
 ```bash
 cp .env.example .env.local
 ```
 
-在 `.env.local` 中配置：
+在 `.env.local` 中填写：
 
 | 变量 | 说明 |
-|------|------|
-| `NANOBANANA_API_KEY` | 聚鑫 API，用于 2D 黏土风格图（Nano Banana） |
-| `NANOBANANA_BASE_URL` | 聚鑫 API 地址，默认 `https://api.jxincm.cn` |
-| `TRIPO_API_KEY` | Tripo3D API，用于 3D 模型、骨骼与动画 |
+|---|---|
+| `NANOBANANA_API_KEY` | 图像风格化 / 多模态相关 API Key |
+| `NANOBANANA_BASE_URL` | API 地址（默认 `https://api.jxincm.cn`） |
+| `TRIPO_API_KEY` | 3D 模型、骨骼与动画生成 API Key |
 
-### 3. 运行方式
+3）运行项目
 
-**仅 Web（创作者）：**
+- **仅运行 Web**
 
 ```bash
 npm run dev
 ```
 
-浏览器打开 [http://localhost:3000](http://localhost:3000)。
+浏览器访问 `http://localhost:3000`。
 
-**桌面端（创作者 + 宠物窗口）：**
+- **运行 Web + 桌面端**
 
-先在一个终端启动 Web：
+先启动 Web：
 
 ```bash
 npm run dev
@@ -68,29 +176,30 @@ npm run dev
 cd desktop && npm start
 ```
 
-桌面端会自动检测 3000/3001/3002 端口并加载本地 Next.js 页面；若未启动 Web，会显示加载提示页。
+桌面端会自动探测 `3000/3001/3002` 端口并连接到可用的本地 Web 服务。
 
-## 项目结构
+### 项目结构
 
-```
+```text
 amico/
 ├── src/                 # Next.js 应用（App Router）
 │   ├── app/
-│   └── components/      # 落地页、创建流程、画廊等
+│   └── components/
 ├── desktop/             # Electron 桌面应用
-│   ├── main.js          # 主进程：主窗口、宠物窗口、托盘、IPC
+│   ├── main.js          # 主进程（窗口、IPC、本地状态）
 │   ├── preload.js
-│   ├── pet-window/      # 3D 宠物窗口
-│   └── loading.html     # Next 未启动时的提示页
-├── .env.example         # 环境变量示例
+│   ├── pet-window/      # 3D 宠物渲染窗口
+│   └── loading.html
+├── public/
+├── .env.example
 └── README.md
 ```
 
-## 注意事项
+### 注意事项
 
-- 请勿将 `.env.local` 或任何真实 API Key 提交到仓库；`.gitignore` 已忽略 `.env*`。
-- 桌面宠物使用的 GLB 会下载到 `~/.amico/current_pet.glb`，用于下次启动时恢复。
+- 请勿提交 `.env.local` 或任何真实 API Key。
+- 桌面端模型文件会保存在 `~/.amico`，用于恢复与复用。
 
-## License
+### 许可
 
-Private / 未指定开源协议。
+私有项目 / 暂未声明开源协议。
